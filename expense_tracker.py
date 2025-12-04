@@ -5,7 +5,6 @@ def main():
     print(f"Running Expense Tracker!")
 
     # Get user to input for expense.
-    #kommentar löschen
     expense = get_user_expense()
     print(expense)
 
