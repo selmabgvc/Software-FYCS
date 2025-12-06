@@ -49,12 +49,23 @@ def get_user_expense():
 
 
 def save_expense_to_file(expense: Expense, expenses_file_path):
-    print(f"Saving User Expense: {expense}" to {expenses_file_path}")
-    with open(expenses_file_path, "a") as f:
+    print(f"Saving User Expense: {expense} to {expenses_file_path}")
+    with open(expenses_file_path, "a", encoding="utf-8") as f:
         f.write(f"{expense.name},{expense.category},{expense.amount}\n")
 
-def summarize_expenses():
+def summarize_expenses(expenses_file_path):
     print(f"Summarizing User Expenses")
+    try:
+        with open(expenses_file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            if lines:
+                print(f"Total expenses recorded: {len(lines)}")
+                for line in lines:
+                    print(f"  {line.strip()}")
+            else:
+                print("No expenses recorded yet.")
+    except FileNotFoundError:
+        print(f"No expenses file found: {expenses_file_path}")
 
 if __name__ == "__main__":
     main()
