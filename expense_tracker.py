@@ -3,20 +3,20 @@ from expenses import Expense
 
 def main():
     print(f"Running Expense Tracker!")
+    expenses_file_path = "expenses.csv"
 
     # Get user to input for expense.
     #Kommentar 2
     expense = get_user_expense()
-    print(expense)
 
-    # Wrtie their expense to a file.
-    save_expense_to_file()
+    # Write their expense to a file.
+    save_expense_to_file(expense, expenses_file_path)
 
     # Read file and summarize expenses.
-    summarize_expenses()
+    summarize_expenses(expenses_file_path)
 
 
-def get_user_expense():
+def get_user_expense(): 
     print(f"Getting User Expense")
     expense_name = input("Enter expense name: ")
     expense_amount = float(input("Enter expense amount: "))
@@ -48,8 +48,10 @@ def get_user_expense():
 
 
 
-def save_expense_to_file():
-    print(f"Saving User Expense")
+def save_expense_to_file(expense: Expense, expenses_file_path):
+    print(f"Saving User Expense: {expense}" to {expenses_file_path}")
+    with open(expenses_file_path, "a") as f:
+        f.write(f"{expense.name},{expense.category},{expense.amount}\n")
 
 def summarize_expenses():
     print(f"Summarizing User Expenses")
