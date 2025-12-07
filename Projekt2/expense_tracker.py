@@ -1,17 +1,21 @@
 try:
-    # Wenn als Paket ausgeführt (python -m Projekt2.expense_tracker)
+    # When started as a package (python -m Projekt2.expense_tracker)
     from .expenses import Expense
 except Exception:
-    # Fallback: wenn man die Datei direkt startet (python Projekt2/expense_tracker.py)
+    # Fallback: when running the file directly (python Projekt2/expense_tracker.py)
     from expenses import Expense
+    from pathlib import Path
+
+from pathlib import Path
 
 
 def main():
     print(f"Running Expense Tracker!")
-    expenses_file_path = "expenses.csv"
+    # Store the CSV next to this module so it lives inside the Projekt2 folder
+    expenses_file_path = Path(__file__).resolve().parent / "expenses.csv"
+    expenses_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Get user to input for expense.
-    #Kommentar 2
     expense = get_user_expense()
 
     # Write their expense to a file.
