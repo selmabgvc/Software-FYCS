@@ -1,10 +1,9 @@
 try:
-    # When run as a package (python -m Projekt2.expense_tracker)
+    # Wenn als Paket ausgeführt (python -m Projekt2.expense_tracker)
     from .expenses import Expense
 except Exception:
-    # Fallback when running the file directly (python Projekt2/expense_tracker.py)
-    # or when package name is available on sys.path
-    from Projekt2.expenses import Expense
+    # Fallback: wenn man die Datei direkt startet (python Projekt2/expense_tracker.py)
+    from expenses import Expense
 
 
 def main():
