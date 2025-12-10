@@ -1,50 +1,42 @@
-try:
-    # When started as a package (python -m Projekt2.expense_tracker)
-    from .expenses import Expense
-except Exception:
-    # Fallback: when running the file directly (python Projekt2/expense_tracker.py)
-    from expenses import Expense
-    from pathlib import Path
-
-from pathlib import Path
+from expense import Expense
+import calendar
+import datetime
 
 
 def main():
-    print(f"Running Expense Tracker!")
-    # Store the CSV next to this module so it lives inside the Projekt2 folder
-    expenses_file_path = Path(__file__).resolve().parent / "expenses.csv"
-    expenses_file_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"\nLet's track your spending!\n")
+    expense_file_path = "expenses.csv"
+    budget = 2000
 
-    # Get user to input for expense.
+    # Get user input for expense.
     expense = get_user_expense()
 
     # Write their expense to a file.
-    save_expense_to_file(expense, expenses_file_path)
+    save_expense_to_file(expense, expense_file_path)
 
     # Read file and summarize expenses.
-    summarize_expenses(expenses_file_path)
+    summarize_expenses(expense_file_path, budget)
 
 
-def get_user_expense(): 
-    print(f"Getting User Expense")
-    expense_name = input("Enter expense name: ")
-    expense_amount = float(input("Enter expense amount: "))
+def get_user_expense():
+    print(f"Please tell me what you've spent money on.\n")
+    expense_name = input("Enter name: ")
+    expense_amount = float(input("Enter amount: "))
     expense_categories = [
-        "🍔 Food", 
-        "🏠 Home", 
-        "🎉 Entertainment", 
-        "🚙 Car", 
-        "❓ Other"
+        "🍔 Food",
+        "🏠 Home",
+        "🚗 car",
+        "🎉 Fun",
+        "✨ Misc",
     ]
 
-    while True: 
-        print("Select a category: ")
+    while True:
+        print("\nPlease select one of the following categoies: \n")
         for i, category_name in enumerate(expense_categories):
-            print(f"   {i +1}. {category_name}")
+            print(f"  {i + 1}. {category_name}")
 
-        values_range = f"[1 - {len(expense_categories)}]"
-        # try error handling for non integer inputs - look it up
-        selected_index = int(input(f"Enter a category number {values_range}: ")) - 1
+        value_range = f"[1 - {len(expense_categories)}]"
+        selected_index = int(input(f"Enter a category number {value_range}: ")) - 1
 
         if selected_index in range(len(expense_categories)):
             selected_category = expense_categories[selected_index]
@@ -53,28 +45,64 @@ def get_user_expense():
             )
             return new_expense
         else:
-            print("Invalid category. Please try again.")
+            print(red("\nThat is an invalid category. You might want to try again!\n"))
 
 
+def save_expense_to_file(expense: Expense, expense_file_path):
+    print(f"\nSo, let's save your expenses {expense} to {expense_file_path}\n")
+    with open(expense_file_path, "a") as f:
+        f.write(f"{expense.name},{expense.amount},{expense.category}\n")
 
-def save_expense_to_file(expense: Expense, expenses_file_path):
-    print(f"Saving User Expense: {expense} to {expenses_file_path}")
-    with open(expenses_file_path, "a", encoding="utf-8") as f:
-        f.write(f"{expense.name},{expense.category},{expense.amount}\n")
 
-def summarize_expenses(expenses_file_path):
-    print(f"Summarizing User Expenses")
-    try:
-        with open(expenses_file_path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-            if lines:
-                print(f"Total expenses recorded: {len(lines)}")
-                for line in lines:
-                    print(f"  {line.strip()}")
-            else:
-                print("No expenses recorded yet.")
-    except FileNotFoundError:
-        print(f"No expenses file found: {expenses_file_path}")
+def summarize_expenses(expense_file_path, budget):
+    print(f"\nLet's take a look at your expenses so far.\n")
+    expenses: list[Expense] = []
+    with open(expense_file_path, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            expense_name, expense_amount, expense_category = line.strip().split(",")
+            line_expense = Expense(
+                name=expense_name,
+                amount=float(expense_amount),
+                category=expense_category,
+            )
+            expenses.append(line_expense)
+
+    amount_by_category = {}
+    for expense in expenses:
+        key = expense.category
+        if key in amount_by_category:
+            amount_by_category[key] += expense.amount
+        else:
+            amount_by_category[key] = expense.amount
+
+    print("\nYour Expenses By Category:\n")
+    for key, amount in amount_by_category.items():
+        print(f"  {key}: {amount:.2f}€")
+
+    total_spent = sum([x.amount for x in expenses])
+    print(f"\nYou've spent a total of {total_spent:.2f}€\n")
+    if total_spent > budget:
+        # New user-friendly warning message when over budget
+        print(red("\nOh, dear! It looks like we've past the your set limit for the budget. "
+                  "You will have to be careful with any further spending.\n"))
+
+    remaining_budget = budget - total_spent
+    print(f"\nWhich means you still have {remaining_budget:.2f}€ left in your budget.\n")
+
+    now = datetime.datetime.now()
+    days_in_month = calendar.monthrange(now.year, now.month)[1]
+    remaining_days = days_in_month - now.day
+
+    daily_budget = remaining_budget / remaining_days
+    print(green(f"If you want to be within your budget. You will have {daily_budget:.2f}€ to spend on a daily basis."))
+
+
+def green(text):
+    return f"\033[92m{text}\033[0m"
+def red(text):
+    return f"\033[91m{text}\033[0m"
+
 
 if __name__ == "__main__":
     main()
