@@ -2,6 +2,7 @@ from expense import Expense
 import calendar
 import datetime
 import os
+from pathlib import Path
 
 
 
@@ -59,7 +60,8 @@ def print_progress_bar(spent: float, budget: float):
 
 
 def main():
-    expense_file_path = "expenses.csv"
+    script_dir = Path(__file__).resolve().parent
+    expense_file_path = script_dir / "expenses.csv"
     budget = 2000.0
 
     print_header("EXPENSE TRACKER")
@@ -126,7 +128,7 @@ def save_expense_to_file(expense: Expense, expense_file_path: str):
     print_subheader("SAVED")
     print(f"{expense}\n")
 
-    with open(expense_file_path, "a") as f:
+    with open(expense_file_path, "a", encoding="utf-8") as f:
         f.write(f"{expense.name},{expense.amount},{expense.category}\n")
 
 
@@ -148,7 +150,7 @@ def summarize_expenses(expense_file_path: str, budget: float):
     print_header(f"{month_name} {year} - SUMMARY")
 
     expenses: list[Expense] = []
-    with open(expense_file_path, "r") as f:
+    with open(expense_file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
         for line in lines:
             if not line.strip():
