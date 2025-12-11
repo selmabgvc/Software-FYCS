@@ -3,7 +3,9 @@ import calendar
 import datetime
 import os
 from pathlib import Path
+from colorama import Fore, Style, init # Install colorama - especially for Windows
 
+init(autoreset=True)
 
 
 #   HEADERS & FARBE
@@ -32,6 +34,14 @@ def red(text: str) -> str:
 
 def yellow(text: str) -> str:
     return f"\033[93m{text}\033[0m"
+
+
+def pink(text: str) -> str:
+    return f"{Fore.MAGENTA}{text}{Style.RESET_ALL}"
+
+
+def blue(text: str) -> str:
+    return f"{Fore.BLUE}{text}{Style.RESET_ALL}"
 
 
 def print_progress_bar(spent: float, budget: float):
@@ -106,8 +116,21 @@ def get_user_expense() -> Expense:
 
     while True:
         print("\nPlease select one of the following categories:")
-        for i, category_name in enumerate(expense_categories):
-            print(f"  {i + 1}. {category_name}")
+        for i, category_name in enumerate(expense_categories, start=1):
+            if category_name == "Food":
+                colored_name = yellow(category_name) # Food in yellow
+            elif category_name == "Home":
+                colored_name = green(category_name) # Home in green
+            elif category_name == "Car":
+                colored_name = red(category_name) # Car in red
+            elif category_name == "Fun":
+                colored_name = pink(category_name) # Fun in pink
+            elif category_name == "Misc":
+                colored_name = blue(category_name) # Misc in blue
+            else:
+                colored_name = category_name
+
+            print(f"  {i}. {colored_name}")
 
         value_range = f"[1 - {len(expense_categories)}]"
         selected_index = int(input(f"Enter a category number {value_range}: ")) - 1
