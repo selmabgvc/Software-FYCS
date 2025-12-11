@@ -1,6 +1,6 @@
 # Projekt 2 von Selma Begovic und Yvonne Kaderavek
 
-# Expense Tracker (CLI)
+# Expense Tracker
 
 A simple command-line **Expense Tracker** written in Python.  
 You can add expenses, categorize them, and see a monthly summary including budget usage and a daily spending recommendation.
