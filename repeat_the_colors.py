@@ -144,7 +144,26 @@ def player_press(num, button, img_dark, img_normal):
 
     # Checken ob Runde richtig wiederholt
     if len(player_input) == len(sequence):
+
+        if len(sequence) % 3 == 0: #Mischen nach jeder 3.Runde
+            shuffle_buttons()
+
         window.after(800, computer_turn)
+
+def shuffle_buttons():
+    # Alle Buttons in einer Liste sammeln
+    buttons = [button1, button2, button3, button4]
+
+    # 4 Grid-Positionen (2×2)
+    positions = [(0,0), (0,1), (1,0), (1,1)]
+
+    # Random mischen
+    random.shuffle(positions)
+
+    # Buttons neu platzieren
+    for btn, (r, c) in zip(buttons, positions):
+        btn.grid(row=r, column=c, padx=20, pady=20)
+
 
 def game_over():
     global sequence, player_input, round_active, highscore
