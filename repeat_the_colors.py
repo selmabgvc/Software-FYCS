@@ -1,22 +1,42 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import random
+import os
 #import time
 
-#Fenster erstellen
+#Funktion Highscore laden und speichern
+HIGHSCORE_FILE = "highscore.txt"
+
+def load_highscore():
+    if not os.path.exists(HIGHSCORE_FILE):
+        return 0
+    with open(HIGHSCORE_FILE, "r") as f:
+        text = f.read().strip()
+        return int(text) if text else 0
+
+def save_highscore(score):
+    with open(HIGHSCORE_FILE, "w") as f:
+        f.write(str(score))
+
+# Fenster erstellen
 window = tk.Tk()
 window.title("Repeat the Colors!")
 window.geometry("1000x800")
 
-#Anzeige oben
+# Anzeige oben
 anzeige = tk.Label(window, text="Watch first, repeat afterwards.", font=("Arial", 30))
 anzeige.pack(pady=20)
+
+# Highscore laden
+highscore = load_highscore()
+
+# Highscore-Label
+highscore_label = tk.Label(window, text=f"Highscore: {highscore}", font=("Arial", 20))
+highscore_label.pack()
 
 # Frame: Position der Buttons im Fenster
 button_frame = tk.Frame(window)
 button_frame.pack(pady=80)
-
-#Bilder für Buttons laden
 
 # Bild-Lade-Funktion mit skalierung
 def load_image(path, size=(150, 150)):
@@ -41,13 +61,10 @@ snowman_dark = load_image("snowman_geklickt.gif")
 
 button1 = tk.Button(button_frame, image=cat, borderwidth=10,
                     command=lambda: player_press(1, button1, cat_dark, cat))
-
 button2 = tk.Button(button_frame, image=cat2, borderwidth=10,
                     command=lambda: player_press(2, button2, cat2_dark, cat2))
-
 button3 = tk.Button(button_frame, image=goose, borderwidth=10,
                     command=lambda: player_press(3, button3, goose_dark, goose))
-
 button4 = tk.Button(button_frame, image=snowman, borderwidth=10,
                     command=lambda: player_press(4, button4, snowman_dark, snowman))
 
@@ -130,11 +147,21 @@ def player_press(num, button, img_dark, img_normal):
         window.after(800, computer_turn)
 
 def game_over():
-    global sequence, player_input, round_active
-    round_active = False
-    anzeige.config(text="❌ Game Over! Restarting...")
+    global sequence, player_input, round_active, highscore
 
-    # kurze Pause, dann Neustart
+    round_active = False
+    score = len(sequence) - 1  # aktuelle Punkte
+
+    # Highscore prüfen
+    if score > highscore:
+        highscore = score
+        save_highscore(highscore)
+        highscore_label.config(text=f"Highscore: {highscore}")
+        anzeige.config(text="🏆 NEW HIGHSCORE! 🏆")
+    else:
+        anzeige.config(text="Game Over! Restarting...")
+
+    # Restart
     window.after(2000, start_new_game)
 
 def start_new_game():
@@ -142,6 +169,7 @@ def start_new_game():
     sequence = []
     anzeige.config(text="Watch first, repeat afterwards.")
     window.after(1000, computer_turn)
+
 
 
 # Spiel starten
