@@ -3,26 +3,27 @@ import calendar
 import datetime
 import os
 from pathlib import Path
-from colorama import Fore, Style, init # Install colorama - especially for Windows
+from colorama import Fore, Style, init # Install colorama
 
 init(autoreset=True)
 
 
-#   HEADERS & FARBE
+#       HEADERS & COLORS
 
 def print_header(title: str):
     line = "=" * 40
     print(f"\n{line}")
-    print(title.center(40))
+    print(green(title.center(40)))
     print(f"{line}\n")
 
 
 def print_subheader(title: str):
     line = "-" * 40
     print(f"\n{line}")
-    print(title.center(40))
+    print(yellow(title.center(40)))
     print(f"{line}\n")
 
+#           COLORS
 
 def green(text: str) -> str:
     return f"\033[92m{text}\033[0m"
@@ -37,12 +38,13 @@ def yellow(text: str) -> str:
 
 
 def pink(text: str) -> str:
-    return f"{Fore.MAGENTA}{text}{Style.RESET_ALL}"
+    return f"\033[95m{text}\033[0m"
 
 
 def blue(text: str) -> str:
-    return f"{Fore.BLUE}{text}{Style.RESET_ALL}"
+    return f"\033[94m{text}\033[0m"
 
+#      PROGRESS BAR
 
 def print_progress_bar(spent: float, budget: float):
     """Zeigt einen einfachen Fortschrittsbalken basierend auf dem Budget."""
@@ -71,10 +73,10 @@ def print_progress_bar(spent: float, budget: float):
 
 def main():
     script_dir = Path(__file__).resolve().parent
-    expense_file_path = script_dir / "expenses.csv"
-    budget = 2000.0
+    expense_file_path = script_dir / "expenses.csv" # Excel Datei mit Ausgaben
+    budget = 2000.0 # Monatliches Budget in Euro
 
-    print_header("EXPENSE TRACKER")
+    print_header("EXPENSE TRACKER") 
 
     while True:
         print_subheader("MAIN MENU")
