@@ -45,20 +45,20 @@ def blue(text: str) -> str:
     return f"\033[94m{text}\033[0m"
 
 #      PROGRESS BAR
+# Shows a progress bar indicating the percentage of budget spent
 
 def print_progress_bar(spent: float, budget: float):
-    """Zeigt einen einfachen Fortschrittsbalken basierend auf dem Budget."""
     if budget <= 0:
         print("No valid budget set.")
         return
 
-    ratio = max(0.0, min(spent / budget, 1.0))  # auf [0,1] begrenzen
+    ratio = max(0.0, min(spent / budget, 1.0))  # limited to [0,1]
     bar_length = 30
     filled_length = int(bar_length * ratio)
     bar = "#" * filled_length + "-" * (bar_length - filled_length)
     percent = ratio * 100
 
-    # Farbe je nach Auslastung
+    # Color the bar based on spending level
     if ratio < 0.75:
         line = green(f"[{bar}] {percent:5.1f}% of budget used")
     elif ratio < 1.0:
@@ -73,10 +73,12 @@ def print_progress_bar(spent: float, budget: float):
 
 def main():
     script_dir = Path(__file__).resolve().parent
-    expense_file_path = script_dir / "expenses.csv" # Excel Datei mit Ausgaben
-    budget = 2000.0 # Monatliches Budget in Euro
+    expense_file_path = script_dir / "expenses.csv" # path for the Excel file
+    budget = 2000.0 # montly budget in Euro
 
     print_header("EXPENSE TRACKER") 
+
+#           MAIN MENU
 
     while True:
         print_subheader("MAIN MENU")
@@ -99,7 +101,7 @@ def main():
 
 
 
-#        USER INPUT & SPEICHERN
+#        USER INPUT & SAVE
 
 def get_user_expense() -> Expense:
     print_subheader("NEW EXPENSE ENTRY")
@@ -158,11 +160,9 @@ def save_expense_to_file(expense: Expense, expense_file_path: str):
 
 
 
-#              AUSWERTUNG
-
+#           MONTHLY SUMMARY
 
 def summarize_expenses(expense_file_path: str, budget: float):
-    # Falls es noch keine Datei gibt
     if not os.path.exists(expense_file_path):
         print_subheader("EXPENSE SUMMARY")
         print("No expenses recorded yet.\n")
@@ -174,6 +174,7 @@ def summarize_expenses(expense_file_path: str, budget: float):
 
     print_header(f"{month_name} {year} - SUMMARY")
 
+    # Create excel file if it doesn't exist
     expenses: list[Expense] = []
     with open(expense_file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -192,7 +193,7 @@ def summarize_expenses(expense_file_path: str, budget: float):
         print("No expenses recorded yet.\n")
         return
 
-    # Summen nach Kategorie
+    # Total cost by category
     amount_by_category = {}
     for expense in expenses:
         key = expense.category
@@ -216,13 +217,13 @@ def summarize_expenses(expense_file_path: str, budget: float):
     print(f"You've spent a total of:     {total_spent:8.2f}€")
     print(f"Remaining monthly budget:   {remaining_budget:8.2f}€")
 
-    # Warnung bei unter 15 % Restbudget
+    # Warnings if budget is low or exceeded
     if remaining_budget < 0:
         print(red("\nYou have exceeded your budget. Further spending should be reduced.\n"))
     elif remaining_ratio < 0.15:
         print(yellow("\nWarning: Less than 15% of your budget remains. Consider reducing expenses.\n"))
 
-    # Budget pro Tag
+    # Budget per day
     days_in_month = calendar.monthrange(now.year, now.month)[1]
     remaining_days = days_in_month - now.day
     if remaining_days > 0:
@@ -237,7 +238,7 @@ def summarize_expenses(expense_file_path: str, budget: float):
         print("This is the last day of the month. No daily budget calculation.\n")
 
 
-#              ENTRYPOINT
+#          ENTRYPOINT
 
 if __name__ == "__main__":
     main()
