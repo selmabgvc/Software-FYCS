@@ -3,12 +3,10 @@ import calendar
 import datetime
 import os
 from pathlib import Path
-from colorama import Fore, Style, init # Install colorama
-
-init(autoreset=True)
 
 
-#       HEADERS & COLORS
+
+#------------- HEADERS & COLORS ----------------
 
 def print_header(title: str):
     line = "=" * 40
@@ -23,28 +21,33 @@ def print_subheader(title: str):
     print(yellow(title.center(40)))
     print(f"{line}\n")
 
-#           COLORS
+#------------------ COLORS --------------------
+
+RESET = "\033[0m"
+ 
+def green(text: str) -> str:
+    return f"\033[92m{text}{RESET}"
 
 def green(text: str) -> str:
-    return f"\033[92m{text}\033[0m"
+    return f"\033[92m{text}{RESET}"
 
 
 def red(text: str) -> str:
-    return f"\033[91m{text}\033[0m"
+    return f"\033[91m{text}{RESET}"
 
 
 def yellow(text: str) -> str:
-    return f"\033[93m{text}\033[0m"
+    return f"\033[93m{text}{RESET}"
 
 
 def pink(text: str) -> str:
-    return f"\033[95m{text}\033[0m"
+    return f"\033[95m{text}{RESET}"
 
 
 def blue(text: str) -> str:
-    return f"\033[94m{text}\033[0m"
+    return f"\033[94m{text}{RESET}"
 
-#      PROGRESS BAR
+#--------------- PROGRESS BAR ----------------
 # Shows a progress bar indicating the percentage of budget spent
 
 def print_progress_bar(spent: float, budget: float):
@@ -68,22 +71,22 @@ def print_progress_bar(spent: float, budget: float):
     print(line)
 
 
-#                 MAIN
+#--------------- MAIN ---------------------
 
 
 def main():
     script_dir = Path(__file__).resolve().parent
-    expense_file_path = script_dir / "expenses.csv" # path for the Excel file
+    expense_file_path = script_dir / "expenses.csv" # path for the Excel file as a CSV file
     budget = 2000.0 # montly budget in Euro
 
     print_header("EXPENSE TRACKER") 
 
-#           MAIN MENU
+#--------------- MAIN MENU -----------------
 
     while True:
         print_subheader("MAIN MENU")
         print("1) Add new expense")
-        print("2) Show monthly summary")
+        print("2) Show summary")
         print("3) Exit\n")
 
         choice = input("Select an option [1-3]: ").strip()
@@ -101,7 +104,7 @@ def main():
 
 
 
-#        USER INPUT & SAVE
+#-------------- USER INPUT & SAVE ---------------
 
 def get_user_expense() -> Expense:
     print_subheader("NEW EXPENSE ENTRY")
@@ -160,7 +163,7 @@ def save_expense_to_file(expense: Expense, expense_file_path: str):
 
 
 
-#           MONTHLY SUMMARY
+#-------------- EXPENSE SUMMARY ---------------
 
 def summarize_expenses(expense_file_path: str, budget: float):
     if not os.path.exists(expense_file_path):
@@ -238,7 +241,7 @@ def summarize_expenses(expense_file_path: str, budget: float):
         print("This is the last day of the month. No daily budget calculation.\n")
 
 
-#          ENTRYPOINT
+#------------- ENTRYPOINT ----------------
 
 if __name__ == "__main__":
     main()
