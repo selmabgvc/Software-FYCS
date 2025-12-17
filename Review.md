@@ -26,7 +26,7 @@ Der Code ist aus unserer Sicht sicher
 
 Standards sind an sich da, aber "windows" "buttoms" etc wird statt "__name__ == "__main__"" genutzt
 Python Sprache scheint richtig eingesetzt zu werden
---> **Antwort:** Danke für den Tipp! Für ein einzelnes Skript, das als Spiel direkt gestartet wird, funktioniert es auch ohne. Trotzdem macht es Sinn und wir haben das als kleine Verbesserung übernommen.
+--> **Antwort:** Danke für den Hinweis! Für ein einzelnes Skript, das als Spiel direkt gestartet wird, funktioniert es auch ohne und ist somit nicht zwingend notwendig. Trotzdem wäres es sinnvoll, jedoch aus zeitlichen Gründen leider nicht mehr umsetzbar.
  
 6. Test
 
@@ -49,3 +49,4 @@ Weihnachtliches Thema
 Bilder für die Buttons statt Farben - sehr süß
 Verschiedene Levels
 Das man mehrere Leben hat
+
