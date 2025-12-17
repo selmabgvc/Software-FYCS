@@ -15,6 +15,9 @@ def asset_path(name):
     return name
 
 
+def main():
+    SOUND_ENABLED = PYGAME_AVAILABLE
+
 # Fenster erstellen
 window = tk.Tk()
 window.title("Repeat the Clicks!")
@@ -63,11 +66,10 @@ difficulty_settings = {
 }
 
 def get_settings():
-    """Aktuelle Einstellungen für den gewählten Schwierigkeitsgrad zurückgeben."""
+    # Aktuelle Einstellungen für den gewählten Schwierigkeitsgrad zurückgeben.
     return difficulty_settings.get(difficulty_var.get(), difficulty_settings["Normal"])
 
-# Welcome Screen
-
+# Welcome Screen / Intro
 content_frame = tk.Frame(window, bg="", highlightthickness=0)
 content_frame.pack(expand=True)
 
@@ -87,7 +89,7 @@ anzeige.pack(pady=20)
 HIGHSCORE_FILE = os.path.join(os.path.expanduser("~"), ".repeat_the_clicks_highscore.txt")
 
 def load_highscore():
-    """Highscore aus Datei laden (oder 0, wenn keine Datei existiert)."""
+    # Highscore aus Datei laden (oder 0, wenn keine Datei existiert).
     if not os.path.exists(HIGHSCORE_FILE):
         return 0
     try:
@@ -98,7 +100,7 @@ def load_highscore():
         return 0
 
 def save_highscore(score):
-    """Highscore in Datei speichern."""
+    # Highscore in Datei speichern.
     with open(HIGHSCORE_FILE, "w") as f:
         f.write(str(score))
 
@@ -159,7 +161,7 @@ for name in ["Easy", "Normal", "Hard"]:
 
 # Start-Button im Intro-Bereich
 def start_button_click():
-    """Startet das erste Spiel, blendet das Intro aus und zeigt das Spielfeld."""
+    # Startet das erste Spiel, blendet das Intro aus und zeigt das Spielfeld.
     global game_started
 
     game_started = True
@@ -197,7 +199,7 @@ lives_label = tk.Label(game_frame, text="", font=("Arial", 18), fg="#D62828")
 button_frame = tk.Frame(game_frame)
 
 def show_game_ui():
-    """Blendet den Spielbereich (Labels + Buttons) ein."""
+    # Blendet den Spielbereich (Labels + Buttons) ein.
     game_frame.pack(pady=20)
     highscore_label.pack()
     score_label.pack()
@@ -253,19 +255,19 @@ round_active = False
 lives = 3
 
 def update_lives_label():
-    """Leben als Herzen aktualisieren."""
+    # Leben als Herzen aktualisieren.
     global lives
     if lives < 0:
         lives = 0
     lives_label.config(text="Lives: " + "❤️" * lives)
 
 def reset_score_round_labels():
-    """Score und Runde zurücksetzen."""
+    # Score und Runde zurücksetzen.
     score_label.config(text="Score: 0")
     round_label.config(text="Round: 1")
 
 def flash_button(button, img_dark, img_normal):
-    """Button für kurze Zeit abdunkeln (ohne Größenänderung, damit sich nichts verschiebt)."""
+    # Button für kurze Zeit abdunkeln (ohne Größenänderung, damit sich nichts verschiebt).
     settings = get_settings()
     flash_time = settings["flash_time"]
 
@@ -276,7 +278,7 @@ def flash_button(button, img_dark, img_normal):
     )
 
 def lose_life(reason):
-    """Ein Leben verlieren, ggf. Game Over auslösen, sonst Sequenz wiederholen."""
+    # Ein Leben verlieren, ggf. Game Over auslösen, sonst Sequenz wiederholen.
     global lives, round_active, player_input
 
     lives -= 1    # ein Leben abziehen
@@ -298,7 +300,7 @@ def lose_life(reason):
         )
 
 def player_press(num, button, img_dark, img_normal):
-    """Wird aufgerufen, wenn der Spieler einen der vier Buttons klickt."""
+    # Wird aufgerufen, wenn der Spieler einen der vier Buttons klickt.
     global round_active, player_input, sequence
 
     if not round_active:
@@ -334,7 +336,7 @@ def player_press(num, button, img_dark, img_normal):
         window.after(800, computer_turn)
 
 def computer_turn():
-    """Zug des Computers: neuen Schritt hinzufügen und Sequenz abspielen."""
+    # Zug des Computers: neuen Schritt hinzufügen und Sequenz abspielen.
     global round_active, sequence, player_input
 
     player_input = []          # Spieler-Eingaben zurücksetzen
@@ -348,7 +350,7 @@ def computer_turn():
     play_sequence(0)
 
 def play_sequence(index):
-    """Die Sequenz Schritt für Schritt anzeigen."""
+    # Die Sequenz Schritt für Schritt anzeigen.
     global round_active
 
     if index >= len(sequence):
@@ -377,7 +379,7 @@ def play_sequence(index):
     window.after(settings["step_delay"], lambda: play_sequence(index + 1))
 
 def shuffle_buttons():
-    """Die vier Buttons zufällig im 2x2 Raster anordnen."""
+    # Die vier Buttons zufällig im 2x2 Raster anordnen.
     buttons = [button1, button2, button3, button4]
     positions = [(0,0), (0,1), (1,0), (1,1)]
     random.shuffle(positions)
@@ -385,21 +387,21 @@ def shuffle_buttons():
         btn.grid(row=r, column=c, padx=20, pady=20)
 
 def show_game_over_overlay():
-    """Game-Over-Overlay einblenden (jetzt im gleichen Bereich wie der Welcome-Text)."""
+    # Game-Over-Overlay einblenden (jetzt im gleichen Bereich wie der Welcome-Text).
     game_over_frame.pack(expand=True)
     game_over_frame.lift()  # nach vorne holen
 
 def hide_game_over_overlay():
-    """Game-Over-Overlay ausblenden."""
+    # Game-Over-Overlay ausblenden.
     game_over_frame.pack_forget()
 
 def on_play_again():
-    """User klickt auf 'Play again' im Game-Over-Screen."""
+    # User klickt auf 'Play again' im Game-Over-Screen.
     hide_game_over_overlay()
     start_new_game()
 
 def on_quit_game():
-    """User klickt auf 'No' im Game-Over-Screen."""
+    # User klickt auf 'No' im Game-Over-Screen.
     hide_game_over_overlay()
     # Spielfläche & Intro komplett ausblenden
     game_frame.pack_forget()
@@ -416,7 +418,7 @@ def on_quit_game():
     anzeige.pack(expand=True)
 
 def game_over():
-    """Game Over: Score berechnen, Highscore prüfen, Game-Over-Sound und Overlay."""
+    # Game Over: Score berechnen, Highscore prüfen, Game-Over-Sound und Overlay.
     global sequence, player_input, round_active, highscore, lives
 
     round_active = False
@@ -442,7 +444,7 @@ def game_over():
     window.after(1500, show_game_over_overlay)
 
 def start_new_game():
-    """Kompletter Neustart: Sequenz leeren, Leben & Anzeigen zurücksetzen, neue Runde starten."""
+    # Kompletter Neustart: Sequenz leeren, Leben & Anzeigen zurücksetzen, neue Runde starten.
     global sequence, lives
 
     sequence = []
@@ -532,7 +534,7 @@ go_no.pack(side=tk.LEFT, padx=10)
 hide_game_over_overlay()
 
 def on_close():
-    """Beim Schließen Musik stoppen, pygame beenden und Fenster zerstören."""
+    # Beim Schließen Musik stoppen, pygame beenden und Fenster zerstören.
     if SOUND_ENABLED:
         try:
             pygame.mixer.music.stop()
@@ -550,3 +552,5 @@ update_lives_label()
 # Tkinter-Eventloop starten
 window.mainloop()
 
+if __name__ == "__main__":
+    main()
