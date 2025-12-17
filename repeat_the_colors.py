@@ -14,10 +14,6 @@ except ImportError:
 def asset_path(name):
     return name
 
-
-def main():
-    SOUND_ENABLED = PYGAME_AVAILABLE
-
 # Fenster erstellen
 window = tk.Tk()
 window.title("Repeat the Clicks!")
@@ -551,6 +547,3 @@ update_lives_label()
 
 # Tkinter-Eventloop starten
 window.mainloop()
-
-if __name__ == "__main__":
-    main()
