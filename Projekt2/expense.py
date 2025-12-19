@@ -1,10 +1,5 @@
 class Expense:
-    """Represents a single expense entry.
-
-    Printing the object (print(expense)) uses `__str__` and will show:
-        Expense: <name>, <category>, <amount> Euro
-    """
-
+    
     def __init__(self, name, category, amount) -> None:
         self.name = name
         self.category = category
