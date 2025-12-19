@@ -28,9 +28,6 @@ RESET = "\033[0m"
 def green(text: str) -> str:
     return f"\033[92m{text}{RESET}"
 
-def green(text: str) -> str:
-    return f"\033[92m{text}{RESET}"
-
 
 def red(text: str) -> str:
     return f"\033[91m{text}{RESET}"
